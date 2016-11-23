@@ -55,13 +55,13 @@ If you want to run the application manually instead of using docker-compose, the
 1. Create a new network for the application and the database:
 
   ```bash
-  $ docker network create owncloud_network
+  $ docker network create owncloud-tier
   ```
 
 2. Start a MariaDB database in the network generated:
 
   ```bash
-  $ docker run -d --name mariadb --net=owncloud_network bitnami/mariadb
+  $ docker run -d --name mariadb --net=owncloud-tier bitnami/mariadb
   ```
 
   *Note:* You need to give the container a name in order to OwnCloud to resolve the host
@@ -69,7 +69,7 @@ If you want to run the application manually instead of using docker-compose, the
 3. Run the OwnCloud container:
 
   ```bash
-  $ docker run -d -p 80:80 --name owncloud --net=owncloud_network bitnami/owncloud
+  $ docker run -d -p 80:80 --name owncloud --net=owncloud-tier bitnami/owncloud
   ```
 
 Then you can access your application at http://your-ip/
@@ -83,7 +83,7 @@ Then you can access your application at http://your-ip/
 
 ## Persisting your application
 
-If you remove every container all your data will be lost, and the next time you run the image the application will be reinitialized. To avoid this loss of data, you should mount a volume that will persist even after the container is removed. 
+If you remove every container all your data will be lost, and the next time you run the image the application will be reinitialized. To avoid this loss of data, you should mount a volume that will persist even after the container is removed.
 
 If you are using docker-compose your data will be persistent as long as you don't remove `apache_data`, `php_data`, `mariadb_data` and `application_data` volumes.
 
@@ -101,7 +101,7 @@ services:
   mariadb:
     image: 'bitnami/mariadb:latest'
     volumes:
-      - '/path/to/your/local/mariadb_data:/bitnami/mariadb'
+      - /path/to/mariadb-persistence:/bitnami/mariadb
   owncloud:
     image: 'bitnami/owncloud:latest'
     depends_on:
@@ -196,7 +196,7 @@ owncloud:
  * For manual execution add a `-e` option with each variable and value:
 
 ```bash
- $ docker run -d -e OWNCLOUD_PASSWORD=my_password -p 80:80 --name owncloud -v /your/local/path/bitnami/owncloud:/bitnami/owncloud --network=owncloud_network bitnami/owncloud
+ $ docker run -d -e OWNCLOUD_PASSWORD=my_password -p 80:80 --name owncloud -v /your/local/path/bitnami/owncloud:/bitnami/owncloud --network=owncloud-tier bitnami/owncloud
 ```
 
 Available variables:
